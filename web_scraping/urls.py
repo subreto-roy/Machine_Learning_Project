@@ -1,8 +1,7 @@
-# App level urls.py
+
 from django.urls import path
-from .views import ExtractionAPIView
+from .views import DataExtractorAPI
 
 urlpatterns = [
-    path('extract/', ExtractionAPIView.as_view()),
+    path('extract/', DataExtractorAPI.as_view(), name='data-extractor'),
 ]
-

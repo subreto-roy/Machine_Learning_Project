@@ -1,17 +1,20 @@
 import streamlit as st
 import requests
+import json
 
-st.title('Web Data Extractor')
+st.title('Data Extractor')
 
-# User inputs
-url = st.text_input('URL', 'Enter the URL of the webpage to extract data from')
-schema = st.text_area('Schema', 'Enter the schema in JSON format')
+url = st.text_input('Enter the URL:', '')
+schema_str = st.text_area('Enter the schema in JSON format:', '')
 
 if st.button('Extract Data'):
-    # Make an API request to the Django server
-    response = requests.post('http://localhost:8000/api/extract/', json={'url': url, 'schema': schema})
-    if response.status_code == 200:
-        st.write('Data extracted successfully!')
-        st.json(response.json())
-    else:
-        st.write('Failed to extract data. Error:', response.text)
+    try:
+        schema = json.loads(schema_str)
+        response = requests.post('http://localhost:8501/extract/', json={'url': url, 'schema': schema})
+        if response.status_code == 200:
+            st.success('Data extracted successfully!')
+            st.json(response.json())
+        else:
+            st.error(f'Failed to extract data: {response.text}')
+    except json.JSONDecodeError:
+        st.error("The schema format is incorrect. Please enter valid JSON.")
